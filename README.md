@@ -26,6 +26,8 @@ Independently formatted HPFS images, codepage/collation cases, malformed trees a
 
 ## 7. Technical references and provenance
 
+- [Design and qualification reference (PDF)](docs/HPFS.pdf) — design-stage reference only, with [editable page source](docs/HPFS.pages); not an operational manual.
+
 - [Pinned central source baseline](https://github.com/Infiltrator-Projects/Filesystems/tree/101026021d9088d80b7f0f472d9061f0e2c688a3/native/filesystems/hpfs)
 - [Native design](native/filesystems/hpfs/DESIGN.md)
 - [Migration and qualification plan](MIGRATION_STATUS.md)
