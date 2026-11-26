@@ -26,13 +26,13 @@ Independently formatted HPFS images, codepage/collation cases, malformed trees a
 
 ## 7. Technical references and provenance
 
-- [Design and qualification reference (PDF)](docs/HPFS.pdf) — design-stage reference only, with [editable page source](docs/HPFS.pages); not an operational manual.
+- [Technical reference (PDF)](docs/HPFS.pdf) — original-format technical reference with historical appendices and [PDF stream source](docs/HPFS.pdfstreams); not an operational manual.
 
 - [Pinned central source baseline](https://github.com/Infiltrator-Projects/Filesystems/tree/101026021d9088d80b7f0f472d9061f0e2c688a3/native/filesystems/hpfs)
 - [Native design](native/filesystems/hpfs/DESIGN.md)
 - [Migration and qualification plan](MIGRATION_STATUS.md)
-- [Original-format reference source](docs/HPFS.pages) and [PDF](docs/HPFS.pdf)
+- [Original-format reference source](docs/HPFS.pdfstreams) and [PDF](docs/HPFS.pdf)
 - [Project philosophy](docs/PHILOSOPHY.md)
 - [Common ABI](https://github.com/Infiltrator-Projects/Libraries)
 
-Preserve inherited notices and licences on source extraction; new project-authored code uses GPL-3.0-or-later. The original-format reference is available here; installation of the PDF remains pending. Central code or test results are not evidence of an independent provider.
+Preserve inherited notices and licences on source extraction; new project-authored code uses GPL-3.0-or-later. The [technical reference](docs/HPFS-TECHNICAL-REFERENCE.md) expands original-format research. The PDF includes both earlier documents as historical appendices; installation remains pending. Central code or test results are not evidence of an independent provider.
