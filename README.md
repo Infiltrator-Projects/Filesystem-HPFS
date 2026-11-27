@@ -2,15 +2,15 @@
 
 ## 1. Purpose and format scope
 
-High Performance File System (HPFS). This repository is the designated independent implementation home for InfiltratorOS. **Documentation and migration scaffold only: no independent runtime provider or release is present.**
+High Performance File System (HPFS). This repository is the designated independent implementation home for InfiltratorOS. **Independent read-only Common V2 development provider. No released installable package yet.**
 
 ## 2. On-disk architecture and invariants
 
-Super/spare blocks, bands and allocation bitmaps, fnodes/anodes, dnode trees, code pages, extended attributes and hotfix mapping must be interpreted together. Validate collation and redirected sector addresses before traversing metadata. These are design requirements for the native implementation, not claims about code already present in this repository.
+Super/spare blocks, bands and allocation bitmaps, fnodes/anodes, dnode trees, code pages, extended attributes and hotfix mapping must be interpreted together. Validate collation and redirected sector addresses before traversing metadata. The qualified development profile is narrower than the complete format.
 
 ## 3. Common V2 implementation and capabilities
 
-No local Common V2 implementation or advertised operation set has yet been qualified. The target entry point is `infiltrator_filesystem_api_v2`, using bounded, partition-relative host I/O. Implement native probe first, then mount, stat, enumeration, read and volume query where applicable. Consumers must negotiate supported groups and profiles; an unsupported operation must not report success or delegate to a private driver.
+The local implementation exports only `infiltrator_filesystem_api_v2`. CORE provides probe, mount, unmount, stat, enumeration and read; VOLUME and METADATA are negotiated from the descriptor. Hosted and import-free AMD64 firmware builds share the native engine. Clean standard HPFS, ASCII case-insensitive names, bitmap and directory-band validation, fnode/anode extent trees and dnode directories. Byte-authored tests passed; historical OS/2 media, code pages, extended attributes, hotfix remapping, HPFS386 and signed firmware boot remain unqualified.
 
 ## 4. Integrity, mutation, allocation and recovery
 
@@ -18,11 +18,11 @@ Mutation, formatting, check/repair and DEFRAG map/plan/execute/verify/recover re
 
 ## 5. Build, installation and release
 
-The target installation is `/System/Filesystems/HPFS.so` and `/System/Resources/Documentation/Filesystem-HPFS.pdf`. Neither file is currently distributed by this repository. Once the implementation qualifies, the intended release is a portable amd64 DEB and CPU-native source-first RUN, with GitHub's automatic source archive. No install or build command is advertised before an executable build exists.
+The target installation is `/System/Filesystems/HPFS.so` and `/System/Resources/Documentation/Filesystem-HPFS.pdf`. Neither file is currently distributed as a release. For development, check out the pinned Libraries revision shown in CI, then run `make carrier` (or the exact CI build steps for UDF). The intended release remains a portable amd64 DEB and CPU-native source-first RUN, with GitHub's automatic source archive.
 
 ## 6. Qualification and limitations
 
-Independently formatted HPFS images, codepage/collation cases, malformed trees and invalid hotfix mappings. Compare independent payloads and unchanged-image hashes; inject truncation, corruption and I/O faults. Establish exact-revision ABI, hosted and import-free freestanding qualification, then independently test BOOT and kernel integration. No local build, runtime or packaging qualification is claimed.
+Exact tested source [d36c85b11ceb](https://github.com/Infiltrator-Projects/Filesystem-HPFS/commit/d36c85b11cebedf1ea9402ae8b18e5beb93bf5e3); [passing provider CI 45954671125](https://github.com/Infiltrator-Projects/Filesystem-HPFS/actions/runs/45954671125). Clean standard HPFS, ASCII case-insensitive names, bitmap and directory-band validation, fnode/anode extent trees and dnode directories. Byte-authored tests passed; historical OS/2 media, code pages, extended attributes, hotfix remapping, HPFS386 and signed firmware boot remain unqualified. Formatting, writes, repair, defragmentation and release remain unqualified.
 
 ## 7. Technical references and provenance
 
