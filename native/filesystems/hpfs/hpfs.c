@@ -124,7 +124,7 @@ static int valid_dnode(const Volume *v,uint32_t b)
 typedef struct {
     const char *name;uint32_t length,index,parent,visited;
     Entry result;int found;
-    uint8_t *seen;
+    uint8_t *seen,*frames;
 } Search;
 static unsigned fold(unsigned c){return c>='a'&&c<='z'?c-32:c;}
 static int equal_name(const char *a,const char *b,uint32_t n)
@@ -135,7 +135,7 @@ static int walk(const Volume *v,uint32_t id,uint32_t up,unsigned depth,Search *s
     if(depth>=MAX_DEPTH||++s->visited>MAX_DNODES)return IFS_FS_UNSUPPORTED;
     if(!valid_dnode(v,id)||bit(s->seen,id/4))return IFS_FS_CORRUPT;
     s->seen[(id/4)/8]|=(uint8_t)(1u<<((id/4)%8));
-    uint8_t raw[DNODE];int rc=rd(v,(uint64_t)id*512,raw,DNODE);if(rc)return rc;
+    uint8_t *raw=s->frames+(size_t)depth*DNODE;int rc=rd(v,(uint64_t)id*512,raw,DNODE);if(rc)return rc;
     uint32_t end=le32(raw+4);
     if(le32(raw)!=0x77e40aaeu||le32(raw+16)!=id||le32(raw+12)!=up||
        !!(raw[8]&1)!=(depth==0)||end<52||end>DNODE||end%4)return IFS_FS_CORRUPT;
@@ -182,9 +182,12 @@ static int child(const Volume *v,const Node *dir,const char *name,uint32_t lengt
     if(dir->type!=IFS_FS_ENTRY_DIRECTORY)return IFS_FS_NOT_FOUND;
     size_t bytes=((uint64_t)v->sectors+31)/32;
     uint8_t *seen=v->host.allocate(v->host.context,bytes);if(!seen)return IFS_FS_NO_MEMORY;
+    uint8_t *frames=v->host.allocate(v->host.context,MAX_DEPTH*DNODE);
+    if(!frames){v->host.release(v->host.context,seen);return IFS_FS_NO_MEMORY;}
     zero(seen,bytes);
-    Search s={.name=name,.length=length,.index=index,.parent=dir->id,.seen=seen};
+    Search s={.name=name,.length=length,.index=index,.parent=dir->id,.seen=seen,.frames=frames};
     int rc=walk(v,dir->droot,dir->id,0,&s);
+    v->host.release(v->host.context,frames);
     v->host.release(v->host.context,seen);
     if(rc)return rc;
     if(!s.found)return name?IFS_FS_NOT_FOUND:IFS_FS_END;
@@ -276,7 +279,7 @@ static Volume *mounted(void *p)
 {if(p)for(unsigned i=0;i<SLOTS;++i)if(slots[i].token==(uintptr_t)p)return &slots[i];return NULL;}
 static void info(const Volume *v,IfsFsVolumeInfoV2 *o)
 {*o=(IfsFsVolumeInfoV2){.structure_bytes=sizeof(*o),.variant=v->variant,.max_name_bytes=MAX_NAME,
-.block_bytes=512,.total_bytes=(uint64_t)v->sectors*v->block,.free_bytes=(uint64_t)v->free_sectors*v->block};}
+.block_bytes=512,.total_bytes=(uint64_t)v->sectors*512,.free_bytes=(uint64_t)v->free_sectors*512};}
 static int probe_impl(const IfsFsHostRuntimeV2 *h,uint32_t *variant)
 {if(!variant)return IFS_FS_INVALID;Volume v={0};int rc=discover(h,&v);if(!rc)*variant=v.variant;dispose(&v);return rc;}
 static int mount_impl(const IfsFsHostRuntimeV2 *h,void **out,IfsFsVolumeInfoV2 *o)
@@ -299,7 +302,7 @@ static int resolve(const Volume *v,const char *path,Entry *out)
     for(unsigned depth=0;*path;++depth){
         if(depth>=256)return IFS_FS_INVALID;
         uint32_t n=0;while(n<=MAX_NAME&&path[n]&&path[n]!='/')++n;
-        if(!n||n>MAX_NAME||(n==1&&path[0]=='.')||(n==2&&same(path,"..",2)))return IFS_FS_INVALID;
+        if(!n||n>MAX_NAME||(n==1&&path[0]=='.')||(n==2&&equal_name(path,"..",2)))return IFS_FS_INVALID;
         Node dir=e.node;rc=child(v,&dir,path,n,0,&e);if(rc)return rc;
         path+=n;if(*path=='/'){++path;if(!*path)return IFS_FS_INVALID;}
     }
