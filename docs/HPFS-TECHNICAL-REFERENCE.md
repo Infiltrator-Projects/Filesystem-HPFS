@@ -52,7 +52,7 @@ The independent provider uses Common V2: https://github.com/Infiltrator-Projects
 
 ## Source and implementation boundary
 
-Original context: Ray Duncan, Design Goals and Implementation of the New High Performance File System, Microsoft Systems Journal, September 1989. Independent on-disk cross-reference: Linux fs/hpfs/hpfs.h, fs/hpfs/anode.c, dnode.c and alloc.c, https://github.com/torvalds/linux/tree/v6.12/fs/hpfs . The reference above describes the classic format, not the current capabilities of the Infiltrator provider. Exact HPFS386 ACL/checksum and historical codepage differences require further primary-source and fixture validation before declaring full writable compatibility. Preserve the prior implementation-status documents as historical appendices.
+Original context: Ray Duncan, Design Goals and Implementation of the New High Performance File System, Microsoft Systems Journal, September 1989. Independent on-disk cross-reference: Linux fs/hpfs/hpfs.h, fs/hpfs/anode.c, dnode.c and alloc.c, https://github.com/torvalds/linux/tree/v6.12/fs/hpfs . The reference above describes the classic format, not the current capabilities of the Infiltrator provider. Exact HPFS386 ACL/checksum and historical codepage differences require further primary-source and fixture validation before declaring full writable compatibility. Historical implementation status is identified separately in Implementation and qualification boundary.
 
 The original header supplies boot signature 0xaa55, superblock 0xf995e849, spare block 0xf9911849 and dnode 0x77e40aae; compare these with the selected revision.
 
