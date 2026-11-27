@@ -1,568 +1,228 @@
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.01 0.52 0.56 rg 50 747 116 5 re f
-1 1 1 rg BT /F2 11 Tf 50 807 Td (INFILTRATOR / FILESYSTEM ENGINEERING REFERENCE) Tj ET
-BT /F2 21 Tf 50 775 Td (HPFS - technical reference) Tj ET
-0.05 0.13 0.22 rg BT /F2 16 Tf 50 715 Td (Design context and compatibility) Tj ET
-BT /F1 11 Tf 15 TL 50 685 Td
-(High Performance File System was introduced with OS/2 1.2 in 1989. Its) Tj
-T* (principal design problems were large hard disks, directory search cost, FAT) Tj
-T* (allocation overhead, long names and locality. The original HPFS and the) Tj
-T* (server-oriented HPFS386 must not be treated as identical writable formats.) Tj
-T* (Read and check the functional version and feature flags before permitting) Tj
-T* (writes; server-specific limits, ACLs and checksums require separate) Tj
-T* (validation. Sector numbers are relative to the start of the volume. The) Tj
-T* (following field inventory describes the classic 512-byte sector layout.) Tj
-ET
-0.05 0.13 0.22 rg BT /F1 9 Tf 50 42 Td (Engineering chapter 1 | Original format, not provider qualification) Tj ET
+0.06 0.15 0.23 rg 0 768 595 74 re f
+1 1 1 rg BT /F2 10 Tf 43 811 Td (INFILTRATOR / FILESYSTEM ENGINEERING) Tj ET
+BT /F2 22 Tf 43 784 Td (HPFS - technical reference) Tj ET
+0.08 0.14 0.20 rg BT /F2 18 Tf 43 736 Td (Contents) Tj ET
+0.08 0.14 0.20 rg BT /F1 11 Tf 43 711 Td (1. Design context and compatibility) Tj ET
+0.08 0.14 0.20 rg BT /F1 11 Tf 43 695 Td (2. Volume and superblock) Tj ET
+0.08 0.14 0.20 rg BT /F1 11 Tf 43 679 Td (3. Spare block and damaged media) Tj ET
+0.08 0.14 0.20 rg BT /F1 11 Tf 43 663 Td (4. Band allocation and free space) Tj ET
+0.08 0.14 0.20 rg BT /F1 11 Tf 43 647 Td (5. File nodes and allocation nodes) Tj ET
+0.08 0.14 0.20 rg BT /F1 11 Tf 43 631 Td (6. Extent tree algorithms) Tj ET
+0.08 0.14 0.20 rg BT /F1 11 Tf 43 615 Td (7. Directory tree representation) Tj ET
+0.08 0.14 0.20 rg BT /F1 11 Tf 43 599 Td (8. Name lookup and metadata) Tj ET
+0.08 0.14 0.20 rg BT /F1 11 Tf 43 583 Td (9. Extended attributes) Tj ET
+0.08 0.14 0.20 rg BT /F1 11 Tf 43 567 Td (10. Mutation and optimisation) Tj ET
+0.08 0.14 0.20 rg BT /F1 11 Tf 43 551 Td (11. Consistency and test vectors) Tj ET
+0.08 0.14 0.20 rg BT /F1 11 Tf 43 535 Td (12. Implementation and qualification boundary) Tj ET
+0.08 0.14 0.20 rg BT /F1 11 Tf 43 519 Td (13. Source and implementation boundary) Tj ET
+0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 1) Tj ET
 
 %%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.01 0.52 0.56 rg 50 747 116 5 re f
-1 1 1 rg BT /F2 11 Tf 50 807 Td (INFILTRATOR / FILESYSTEM ENGINEERING REFERENCE) Tj ET
-BT /F2 21 Tf 50 775 Td (HPFS - technical reference) Tj ET
-0.05 0.13 0.22 rg BT /F2 16 Tf 50 715 Td (Volume and superblock) Tj ET
-BT /F1 11 Tf 15 TL 50 685 Td
-(The boot sector is sector 0 and carries a FAT-like BPB, HPFS identification) Tj
-T* (and 0xAA55 marker. Sector 16 is the superblock: little-endian 32-bit magic) Tj
-T* (0xF995E849 at byte 0, second magic 0xFA53E9C5 at 4, version and functional) Tj
-T* (version at 8 and 9. Root fnode sector at 12; total sectors at 16; bad-sector) Tj
-T* (count at 20; bitmap-table sector at 24; bad-block-list sector at 32; last) Tj
-T* (check and optimisation times at 40 and 44; directory-band size, start, end) Tj
-T* (and bitmap sector at 48, 52, 56 and 60. Reject inconsistent size and band) Tj
-T* (bounds. A boot signature alone is not sufficient identification.) Tj
-ET
-0.05 0.13 0.22 rg BT /F1 9 Tf 50 42 Td (Engineering chapter 2 | Original format, not provider qualification) Tj ET
+0.06 0.15 0.23 rg 0 768 595 74 re f
+1 1 1 rg BT /F2 10 Tf 43 811 Td (INFILTRATOR / FILESYSTEM ENGINEERING) Tj ET
+BT /F2 22 Tf 43 784 Td (HPFS - technical reference) Tj ET
+0.08 0.14 0.20 rg BT /F2 15 Tf 43 736 Td (1. Design context and compatibility) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 706 Td (High Performance File System was introduced with OS/2 1.2 in 1989. Its principal) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 692 Td (design problems were large hard disks, directory search cost, FAT allocation) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 678 Td (overhead, long names and locality. The original HPFS and the server-oriented) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 664 Td (HPFS386 must not be treated as identical writable formats. Read and check the) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 650 Td (functional version and feature flags before permitting writes; server-specific) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (limits, ACLs and checksums require separate validation. Sector numbers are relative) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (to the start of the volume. The following field inventory describes the classic) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (512-byte sector layout.) Tj ET
+0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 2) Tj ET
 
 %%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.01 0.52 0.56 rg 50 747 116 5 re f
-1 1 1 rg BT /F2 11 Tf 50 807 Td (INFILTRATOR / FILESYSTEM ENGINEERING REFERENCE) Tj ET
-BT /F2 21 Tf 50 775 Td (HPFS - technical reference) Tj ET
-0.05 0.13 0.22 rg BT /F2 16 Tf 50 715 Td (Spare block and damaged media) Tj ET
-BT /F1 11 Tf 15 TL 50 685 Td
-(Sector 17 contains the spare block, magic 0xF9911849 and 0xFA5229C5 at) Tj
-T* (offsets 0 and 4. Status bytes begin at 8; the low bit marks an unclean) Tj
-T* (volume. At 12 is the hotfix table location, followed by counts of used and) Tj
-T* (total spare sectors, then free and total emergency directory nodes, codepage) Tj
-T* (directory and codepage count. HPFS386 adds checksum and feature semantics; do) Tj
-T* (not assume classic unused fields are universally unused. The hotfix table) Tj
-T* (associates original sector addresses with preallocated replacements.) Tj
-T* (Interpret mapped addresses consistently for both read and write; validate) Tj
-T* (mapping ranges and uniqueness. Keep hotfix pools outside normal allocation.) Tj
-ET
-0.05 0.13 0.22 rg BT /F1 9 Tf 50 42 Td (Engineering chapter 3 | Original format, not provider qualification) Tj ET
+0.06 0.15 0.23 rg 0 768 595 74 re f
+1 1 1 rg BT /F2 10 Tf 43 811 Td (INFILTRATOR / FILESYSTEM ENGINEERING) Tj ET
+BT /F2 22 Tf 43 784 Td (HPFS - technical reference) Tj ET
+0.08 0.14 0.20 rg BT /F2 15 Tf 43 736 Td (2. Volume and superblock) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 706 Td (The boot sector is sector 0 and carries a FAT-like BPB, HPFS identification and) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 692 Td (0xAA55 marker. Sector 16 is the superblock: little-endian 32-bit magic 0xF995E849) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 678 Td (at byte 0, second magic 0xFA53E9C5 at 4, version and functional version at 8 and 9.) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 664 Td (Root fnode sector at 12; total sectors at 16; bad-sector count at 20; bitmap-table) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 650 Td (sector at 24; bad-block-list sector at 32; last check and optimisation times at 40) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (and 44; directory-band size, start, end and bitmap sector at 48, 52, 56 and 60.) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (Reject inconsistent size and band bounds. A boot signature alone is not sufficient) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (identification.) Tj ET
+0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 3) Tj ET
 
 %%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.01 0.52 0.56 rg 50 747 116 5 re f
-1 1 1 rg BT /F2 11 Tf 50 807 Td (INFILTRATOR / FILESYSTEM ENGINEERING REFERENCE) Tj ET
-BT /F2 21 Tf 50 775 Td (HPFS - technical reference) Tj ET
-0.05 0.13 0.22 rg BT /F2 16 Tf 50 715 Td (Band allocation and free space) Tj ET
-BT /F1 11 Tf 15 TL 50 685 Td
-(A normal band covers 16384 sectors, or 8 MiB. Its 2048-byte bitmap records) Tj
-T* (one sector per bit: 1 means available, 0 means reserved or allocated. Bit) Tj
-T* (numbering starts at the least significant bit of each byte. The table) Tj
-T* (referenced by the superblock supplies the bitmap locations; their common) Tj
-T* (alternating end placements are not authoritative. For sector 18000 the band) Tj
-T* (index is 1, local sector is 1616, bitmap byte 202 and bit 0. The directory) Tj
-T* (band is already reserved in the ordinary bitmap; its separate bitmap uses one) Tj
-T* (bit per four-sector directory node. Free-space counts must exclude both forms) Tj
-T* (of reserved space.) Tj
-ET
-0.05 0.13 0.22 rg BT /F1 9 Tf 50 42 Td (Engineering chapter 4 | Original format, not provider qualification) Tj ET
+0.06 0.15 0.23 rg 0 768 595 74 re f
+1 1 1 rg BT /F2 10 Tf 43 811 Td (INFILTRATOR / FILESYSTEM ENGINEERING) Tj ET
+BT /F2 22 Tf 43 784 Td (HPFS - technical reference) Tj ET
+0.08 0.14 0.20 rg BT /F2 15 Tf 43 736 Td (3. Spare block and damaged media) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 706 Td (Sector 17 contains the spare block, magic 0xF9911849 and 0xFA5229C5 at offsets 0) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 692 Td (and 4. Status bytes begin at 8; the low bit marks an unclean volume. At 12 is the) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 678 Td (hotfix table location, followed by counts of used and total spare sectors, then) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 664 Td (free and total emergency directory nodes, codepage directory and codepage count.) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 650 Td (HPFS386 adds checksum and feature semantics; do not assume classic unused fields) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (are universally unused. The hotfix table associates original sector addresses with) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (preallocated replacements. Interpret mapped addresses consistently for both read) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (and write; validate mapping ranges and uniqueness. Keep hotfix pools outside normal) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 594 Td (allocation.) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 570 Td (Distinguish ordinary HPFS from HPFS386 checksum fields and validate the super/spare) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 556 Td (pair, hotfix mappings and codepage records before relying on dnode lookup.) Tj ET
+0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 4) Tj ET
 
 %%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.01 0.52 0.56 rg 50 747 116 5 re f
-1 1 1 rg BT /F2 11 Tf 50 807 Td (INFILTRATOR / FILESYSTEM ENGINEERING REFERENCE) Tj ET
-BT /F2 21 Tf 50 775 Td (HPFS - technical reference) Tj ET
-0.05 0.13 0.22 rg BT /F2 16 Tf 50 715 Td (File nodes and allocation nodes) Tj ET
-BT /F1 11 Tf 15 TL 50 685 Td
-(A file or directory has a 512-byte fnode, signature 0xF7E40AAE. A truncated) Tj
-T* (name occupies offsets 13 through 27 with full name length at 12; parent fnode) Tj
-T* (at 28. ACL information begins at 32, external EA size and sector at 44 and) Tj
-T* (48, inline EA size at 52 and flags at 54. The allocation-tree header begins) Tj
-T* (at 56; its entries begin at 64. Leaf capacity is eight records; internal) Tj
-T* (capacity is twelve. File size is at 160. An allocation node \(anode\) starts) Tj
-T* (with magic 0x37E40AAE, self and parent addresses at 4 and 8, then tree header) Tj
-T* (at 12. Entries start at 20; capacities are forty leaf or sixty internal) Tj
-T* (entries.) Tj
-ET
-0.05 0.13 0.22 rg BT /F1 9 Tf 50 42 Td (Engineering chapter 5 | Original format, not provider qualification) Tj ET
+0.06 0.15 0.23 rg 0 768 595 74 re f
+1 1 1 rg BT /F2 10 Tf 43 811 Td (INFILTRATOR / FILESYSTEM ENGINEERING) Tj ET
+BT /F2 22 Tf 43 784 Td (HPFS - technical reference) Tj ET
+0.08 0.14 0.20 rg BT /F2 15 Tf 43 736 Td (4. Band allocation and free space) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 706 Td (A normal band covers 16384 sectors, or 8 MiB. Its 2048-byte bitmap records one) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 692 Td (sector per bit: 1 means available, 0 means reserved or allocated. Bit numbering) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 678 Td (starts at the least significant bit of each byte. The table referenced by the) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 664 Td (superblock supplies the bitmap locations; their common alternating end placements) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 650 Td (are not authoritative. For sector 18000 the band index is 1, local sector is 1616,) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (bitmap byte 202 and bit 0. The directory band is already reserved in the ordinary) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (bitmap; its separate bitmap uses one bit per four-sector directory node. Free-space) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (counts must exclude both forms of reserved space.) Tj ET
+0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 5) Tj ET
 
 %%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.01 0.52 0.56 rg 50 747 116 5 re f
-1 1 1 rg BT /F2 11 Tf 50 807 Td (INFILTRATOR / FILESYSTEM ENGINEERING REFERENCE) Tj ET
-BT /F2 21 Tf 50 775 Td (HPFS - technical reference) Tj ET
-0.05 0.13 0.22 rg BT /F2 16 Tf 50 715 Td (Extent tree algorithms) Tj ET
-BT /F1 11 Tf 15 TL 50 685 Td
-(Each eight-byte allocation header contains flags at 0, free and used entry) Tj
-T* (counts at 4 and 5 and first-free offset at 6. Flag 0x80 selects internal) Tj
-T* (nodes. A leaf record consists of three little-endian 32-bit quantities:) Tj
-T* (logical starting sector, run length and physical starting sector. An internal) Tj
-T* (record is a logical upper boundary and child-sector address. Descend) Tj
-T* (according to the exclusive upper boundary, validate each node and its parent) Tj
-T* (linkage, then translate within the selected extent. For logical sector 27 in) Tj
-T* (a run starting at logical 20, physical 1000, length 16, the result is) Tj
-T* (physical 1007. Do not infer sparse semantics for gaps in an otherwise invalid) Tj
-T* (mapping.) Tj
-ET
-0.05 0.13 0.22 rg BT /F1 9 Tf 50 42 Td (Engineering chapter 6 | Original format, not provider qualification) Tj ET
+0.06 0.15 0.23 rg 0 768 595 74 re f
+1 1 1 rg BT /F2 10 Tf 43 811 Td (INFILTRATOR / FILESYSTEM ENGINEERING) Tj ET
+BT /F2 22 Tf 43 784 Td (HPFS - technical reference) Tj ET
+0.08 0.14 0.20 rg BT /F2 15 Tf 43 736 Td (5. File nodes and allocation nodes) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 706 Td (A file or directory has a 512-byte fnode, signature 0xF7E40AAE. A truncated name) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 692 Td (occupies offsets 13 through 27 with full name length at 12; parent fnode at 28. ACL) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 678 Td (information begins at 32, external EA size and sector at 44 and 48, inline EA size) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 664 Td (at 52 and flags at 54. The allocation-tree header begins at 56; its entries begin) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 650 Td (at 64. Leaf capacity is eight records; internal capacity is twelve. File size is at) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (160. An allocation node \(anode\) starts with magic 0x37E40AAE, self and parent) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (addresses at 4 and 8, then tree header at 12. Entries start at 20; capacities are) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (forty leaf or sixty internal entries.) Tj ET
+0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 6) Tj ET
 
 %%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.01 0.52 0.56 rg 50 747 116 5 re f
-1 1 1 rg BT /F2 11 Tf 50 807 Td (INFILTRATOR / FILESYSTEM ENGINEERING REFERENCE) Tj ET
-BT /F2 21 Tf 50 775 Td (HPFS - technical reference) Tj ET
-0.05 0.13 0.22 rg BT /F2 16 Tf 50 715 Td (Directory tree representation) Tj ET
-BT /F1 11 Tf 15 TL 50 685 Td
-(A dnode is 2048 bytes, aligned on four sectors. Signature 0x77E40AAE at 0,) Tj
-T* (first-free byte offset at 4, status at 8, parent address at 12 and self) Tj
-T* (address at 16. Variable-sized entries begin at 20. Each entry starts with a) Tj
-T* (two-byte record length, flags at 2, attributes at 3, fnode at 4, modification) Tj
-T* (time at 8, byte length at 12, access and creation times at 16 and 20, EA size) Tj
-T* (at 24, ACL count at 28, codepage index at 29 and name length at 30. Name) Tj
-T* (begins at 31; an optional child address is at the record end. Special first) Tj
-T* (and last sentinel entries are not ordinary filenames.) Tj
-ET
-0.05 0.13 0.22 rg BT /F1 9 Tf 50 42 Td (Engineering chapter 7 | Original format, not provider qualification) Tj ET
+0.06 0.15 0.23 rg 0 768 595 74 re f
+1 1 1 rg BT /F2 10 Tf 43 811 Td (INFILTRATOR / FILESYSTEM ENGINEERING) Tj ET
+BT /F2 22 Tf 43 784 Td (HPFS - technical reference) Tj ET
+0.08 0.14 0.20 rg BT /F2 15 Tf 43 736 Td (6. Extent tree algorithms) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 706 Td (Each eight-byte allocation header contains flags at 0, free and used entry counts) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 692 Td (at 4 and 5 and first-free offset at 6. Flag 0x80 selects internal nodes. A leaf) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 678 Td (record consists of three little-endian 32-bit quantities: logical starting sector,) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 664 Td (run length and physical starting sector. An internal record is a logical upper) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 650 Td (boundary and child-sector address. Descend according to the exclusive upper) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (boundary, validate each node and its parent linkage, then translate within the) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (selected extent. For logical sector 27 in a run starting at logical 20, physical) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (1000, length 16, the result is physical 1007. Do not infer sparse semantics for) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 594 Td (gaps in an otherwise invalid mapping.) Tj ET
+0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 7) Tj ET
 
 %%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.01 0.52 0.56 rg 50 747 116 5 re f
-1 1 1 rg BT /F2 11 Tf 50 807 Td (INFILTRATOR / FILESYSTEM ENGINEERING REFERENCE) Tj ET
-BT /F2 21 Tf 50 775 Td (HPFS - technical reference) Tj ET
-0.05 0.13 0.22 rg BT /F2 16 Tf 50 715 Td (Name lookup and metadata) Tj ET
-BT /F1 11 Tf 15 TL 50 685 Td
-(Names use the volume's byte-based case-folding and codepage rules, not) Tj
-T* (arbitrary Unicode normalisation. Directory lookup compares the desired name) Tj
-T* (against sorted entries, descending through the associated child pointer where) Tj
-T* (required. Validate entry lengths, alignment, name boundaries, sentinel) Tj
-T* (placement, ordering and parent references. Insertion may split a dnode and) Tj
-T* (promote a separator; deletion may redistribute entries or merge nodes. Root) Tj
-T* (changes must be reflected in the directory fnode. Maintain the directory) Tj
-T* (entry's duplicated size and timestamps consistently with the fnode. Long name) Tj
-T* (support does not remove the need for correct name collision handling.) Tj
-ET
-0.05 0.13 0.22 rg BT /F1 9 Tf 50 42 Td (Engineering chapter 8 | Original format, not provider qualification) Tj ET
+0.06 0.15 0.23 rg 0 768 595 74 re f
+1 1 1 rg BT /F2 10 Tf 43 811 Td (INFILTRATOR / FILESYSTEM ENGINEERING) Tj ET
+BT /F2 22 Tf 43 784 Td (HPFS - technical reference) Tj ET
+0.08 0.14 0.20 rg BT /F2 15 Tf 43 736 Td (7. Directory tree representation) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 706 Td (A dnode is 2048 bytes, aligned on four sectors. Signature 0x77E40AAE at 0,) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 692 Td (first-free byte offset at 4, status at 8, parent address at 12 and self address at) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 678 Td (16. Variable-sized entries begin at 20. Each entry starts with a two-byte record) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 664 Td (length, flags at 2, attributes at 3, fnode at 4, modification time at 8, byte) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 650 Td (length at 12, access and creation times at 16 and 20, EA size at 24, ACL count at) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (28, codepage index at 29 and name length at 30. Name begins at 31; an optional) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (child address is at the record end. Special first and last sentinel entries are not) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (ordinary filenames.) Tj ET
+0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 8) Tj ET
 
 %%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.01 0.52 0.56 rg 50 747 116 5 re f
-1 1 1 rg BT /F2 11 Tf 50 807 Td (INFILTRATOR / FILESYSTEM ENGINEERING REFERENCE) Tj ET
-BT /F2 21 Tf 50 775 Td (HPFS - technical reference) Tj ET
-0.05 0.13 0.22 rg BT /F2 16 Tf 50 715 Td (Extended attributes) Tj ET
-BT /F1 11 Tf 15 TL 50 685 Td
-(An EA begins with one-byte flags, one-byte name length and a two-byte) Tj
-T* (little-endian value length. The name is followed by its terminating zero and) Tj
-T* (the value. Flags distinguish required attributes and indirect storage; the) Tj
-T* (indirect representation records an actual value size and sector location,) Tj
-T* (which may refer to an anode tree. EA lists may themselves reside within an) Tj
-T* (fnode or outside it. Bound every entry by the containing allocation. Preserve) Tj
-T* (unfamiliar attributes and access controls; dropping them silently may destroy) Tj
-T* (application semantics even when file data survives.) Tj
-ET
-0.05 0.13 0.22 rg BT /F1 9 Tf 50 42 Td (Engineering chapter 9 | Original format, not provider qualification) Tj ET
+0.06 0.15 0.23 rg 0 768 595 74 re f
+1 1 1 rg BT /F2 10 Tf 43 811 Td (INFILTRATOR / FILESYSTEM ENGINEERING) Tj ET
+BT /F2 22 Tf 43 784 Td (HPFS - technical reference) Tj ET
+0.08 0.14 0.20 rg BT /F2 15 Tf 43 736 Td (8. Name lookup and metadata) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 706 Td (Names use the volume's byte-based case-folding and codepage rules, not arbitrary) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 692 Td (Unicode normalisation. Directory lookup compares the desired name against sorted) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 678 Td (entries, descending through the associated child pointer where required. Validate) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 664 Td (entry lengths, alignment, name boundaries, sentinel placement, ordering and parent) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 650 Td (references. Insertion may split a dnode and promote a separator; deletion may) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (redistribute entries or merge nodes. Root changes must be reflected in the) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (directory fnode. Maintain the directory entry's duplicated size and timestamps) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (consistently with the fnode. Long name support does not remove the need for correct) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 594 Td (name collision handling.) Tj ET
+0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 9) Tj ET
 
 %%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.01 0.52 0.56 rg 50 747 116 5 re f
-1 1 1 rg BT /F2 11 Tf 50 807 Td (INFILTRATOR / FILESYSTEM ENGINEERING REFERENCE) Tj ET
-BT /F2 21 Tf 50 775 Td (HPFS - technical reference) Tj ET
-0.05 0.13 0.22 rg BT /F2 16 Tf 50 715 Td (Mutation and optimisation) Tj ET
-BT /F1 11 Tf 15 TL 50 685 Td
-(For allocation, find suitably sized contiguous free runs near the owning) Tj
-T* (directory, reserve them and update the allocation tree. Coalesce adjacent) Tj
-T* (logical and physical runs where representable. A relocation requires copying) Tj
-T* (and verifying contents before publishing the new extent; never free a live) Tj
-T* (source extent prematurely. A directory split additionally requires an) Tj
-T* (available aligned dnode and updates to child parents. Classic HPFS uses) Tj
-T* (dirty-state tracking and repair, not a general transactional journal.) Tj
-T* (Interrupted multi-sector updates must be considered explicitly, with writable) Tj
-T* (support withheld until recovery ordering is validated against independent) Tj
-T* (media.) Tj
-ET
-0.05 0.13 0.22 rg BT /F1 9 Tf 50 42 Td (Engineering chapter 10 | Original format, not provider qualification) Tj ET
+0.06 0.15 0.23 rg 0 768 595 74 re f
+1 1 1 rg BT /F2 10 Tf 43 811 Td (INFILTRATOR / FILESYSTEM ENGINEERING) Tj ET
+BT /F2 22 Tf 43 784 Td (HPFS - technical reference) Tj ET
+0.08 0.14 0.20 rg BT /F2 15 Tf 43 736 Td (9. Extended attributes) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 706 Td (An EA begins with one-byte flags, one-byte name length and a two-byte little-endian) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 692 Td (value length. The name is followed by its terminating zero and the value. Flags) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 678 Td (distinguish required attributes and indirect storage; the indirect representation) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 664 Td (records an actual value size and sector location, which may refer to an anode tree.) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 650 Td (EA lists may themselves reside within an fnode or outside it. Bound every entry by) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (the containing allocation. Preserve unfamiliar attributes and access controls;) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (dropping them silently may destroy application semantics even when file data) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (survives.) Tj ET
+0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 10) Tj ET
 
 %%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.01 0.52 0.56 rg 50 747 116 5 re f
-1 1 1 rg BT /F2 11 Tf 50 807 Td (INFILTRATOR / FILESYSTEM ENGINEERING REFERENCE) Tj ET
-BT /F2 21 Tf 50 775 Td (HPFS - technical reference) Tj ET
-0.05 0.13 0.22 rg BT /F2 16 Tf 50 715 Td (Consistency and test vectors) Tj ET
-BT /F1 11 Tf 15 TL 50 685 Td
-(Traverse root and every directory child with cycle detection; collect file,) Tj
-T* (dnode, anode, external EA and reserved-sector ownership. Compare that) Tj
-T* (ownership against both bitmap classes; detect overlaps, missing allocations) Tj
-T* (and unreachable nodes. Validate lengths independently from logical extent) Tj
-T* (capacity and preserve unknown feature data. Test a directory crossing one) Tj
-T* (dnode, an extent tree crossing eight runs, a file whose allocation spans two) Tj
-T* (bands, non-ASCII case comparisons and a hotfixed sector. Fault-inject between) Tj
-T* (allocation, copy, publication and release. Do not repair ambiguous ownership) Tj
-T* (by guessing.) Tj
-ET
-0.05 0.13 0.22 rg BT /F1 9 Tf 50 42 Td (Engineering chapter 11 | Original format, not provider qualification) Tj ET
+0.06 0.15 0.23 rg 0 768 595 74 re f
+1 1 1 rg BT /F2 10 Tf 43 811 Td (INFILTRATOR / FILESYSTEM ENGINEERING) Tj ET
+BT /F2 22 Tf 43 784 Td (HPFS - technical reference) Tj ET
+0.08 0.14 0.20 rg BT /F2 15 Tf 43 736 Td (10. Mutation and optimisation) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 706 Td (For allocation, find suitably sized contiguous free runs near the owning directory,) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 692 Td (reserve them and update the allocation tree. Coalesce adjacent logical and physical) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 678 Td (runs where representable. A relocation requires copying and verifying contents) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 664 Td (before publishing the new extent; never free a live source extent prematurely. A) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 650 Td (directory split additionally requires an available aligned dnode and updates to) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (child parents. Classic HPFS uses dirty-state tracking and repair, not a general) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (transactional journal. Interrupted multi-sector updates must be considered) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (explicitly, with writable support withheld until recovery ordering is validated) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 594 Td (against independent media.) Tj ET
+0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 11) Tj ET
 
 %%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.01 0.52 0.56 rg 50 747 116 5 re f
-1 1 1 rg BT /F2 11 Tf 50 807 Td (INFILTRATOR / FILESYSTEM ENGINEERING REFERENCE) Tj ET
-BT /F2 21 Tf 50 775 Td (HPFS - technical reference) Tj ET
-0.05 0.13 0.22 rg BT /F2 16 Tf 50 715 Td (Source and implementation boundary) Tj ET
-BT /F1 11 Tf 15 TL 50 685 Td
-(Original context: Ray Duncan, Design Goals and Implementation of the New High) Tj
-T* (Performance File System, Microsoft Systems Journal, September 1989.) Tj
-T* (Independent on-disk cross-reference: Linux fs/hpfs/hpfs.h, fs/hpfs/anode.c,) Tj
-T* (dnode.c and alloc.c, https://github.com/torvalds/linux/tree/v6.12/fs/hpfs .) Tj
-T* (The reference above describes the classic format, not the current) Tj
-T* (capabilities of the Infiltrator provider. Exact HPFS386 ACL/checksum and) Tj
-T* (historical codepage differences require further primary-source and fixture) Tj
-T* (validation before declaring full writable compatibility. Preserve the prior) Tj
-T* (implementation-status documents as historical appendices.) Tj
-ET
-0.05 0.13 0.22 rg BT /F1 9 Tf 50 42 Td (Engineering chapter 12 | Original format, not provider qualification) Tj ET
+0.06 0.15 0.23 rg 0 768 595 74 re f
+1 1 1 rg BT /F2 10 Tf 43 811 Td (INFILTRATOR / FILESYSTEM ENGINEERING) Tj ET
+BT /F2 22 Tf 43 784 Td (HPFS - technical reference) Tj ET
+0.08 0.14 0.20 rg BT /F2 15 Tf 43 736 Td (11. Consistency and test vectors) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 706 Td (Traverse root and every directory child with cycle detection; collect file, dnode,) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 692 Td (anode, external EA and reserved-sector ownership. Compare that ownership against) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 678 Td (both bitmap classes; detect overlaps, missing allocations and unreachable nodes.) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 664 Td (Validate lengths independently from logical extent capacity and preserve unknown) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 650 Td (feature data. Test a directory crossing one dnode, an extent tree crossing eight) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (runs, a file whose allocation spans two bands, non-ASCII case comparisons and a) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (hotfixed sector. Fault-inject between allocation, copy, publication and release. Do) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (not repair ambiguous ownership by guessing.) Tj ET
+0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 12) Tj ET
 
 %%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.01 0.52 0.56 rg 50 747 116 5 re f
-1 1 1 rg BT /F2 11 Tf 50 807 Td (INFILTRATOR / FILESYSTEM ENGINEERING REFERENCE) Tj ET
-BT /F2 21 Tf 50 775 Td (HPFS - technical reference) Tj ET
-0.05 0.13 0.22 rg BT /F2 16 Tf 50 715 Td (Historical reference appendices) Tj ET
-BT /F1 11 Tf 15 TL 50 685 Td
-(The following pages preserve both previous documents. Their dated) Tj
-T* (implementation statements are historical evidence, not a qualification claim.) Tj
-ET
-0.05 0.13 0.22 rg BT /F1 9 Tf 50 42 Td (Engineering chapter 13 | Original format, not provider qualification) Tj ET
+0.06 0.15 0.23 rg 0 768 595 74 re f
+1 1 1 rg BT /F2 10 Tf 43 811 Td (INFILTRATOR / FILESYSTEM ENGINEERING) Tj ET
+BT /F2 22 Tf 43 784 Td (HPFS - technical reference) Tj ET
+0.08 0.14 0.20 rg BT /F2 15 Tf 43 736 Td (12. Implementation and qualification boundary) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 706 Td (The independent provider uses Common V2:) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 692 Td (https://github.com/Infiltrator-Projects/Libraries/blob/main/docs/FILESYSTEM_COMMON_) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 678 Td (ABI_V2.md . Negotiate actual operation masks and media profiles. Distinguish) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 664 Td (unsupported, corrupt, I/O and stale-handle results. Require bounded host I/O,) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 650 Td (exclusive unmounted ownership and durable flush before mutation. Test Media and) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (Defragmenter consume the same engine, not separate format parsers. Hosted and) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (freestanding binaries, relocation, recovery, BOOT, kernel integration and packages) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (require separate exact-source evidence. Current support belongs to the repository) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 594 Td (README and qualification records. The intended package paths are) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 580 Td (/System/Filesystems/ and /System/Resources/Documentation/; the reference is not an) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 566 Td (installation or release-status claim.) Tj ET
+0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 13) Tj ET
 
 %%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.04 0.54 0.60 rg 50 747 115 4 re f
-0.78 0.82 0.86 RG 0.6 w 50 50 m 545 50 l S
-BT /F2 9 Tf 0.62 0.86 0.90 rg 1 0 0 1 50 801 Tm (INFILTRATOR / ORIGINAL FILESYSTEM HISTORY AND DESIGN) Tj ET
-BT /F2 19 Tf 1 1 1 rg 1 0 0 1 50 771 Tm (High Performance File System) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 34 Tm (Filesystem-HPFS / engineering reference) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 512 34 Tm (PAGE 01) Tj ET
-BT /F2 14 Tf 0.02 0.45 0.50 rg 1 0 0 1 50 711 Tm (HISTORY / ORIGINAL DESIGN / DISK FORMAT) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 676 Tm (OS/2 High Performance File System. This is a design contract, not a claim of) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 660 Tm (implemented capabilities.) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 630 Tm (Native provider design and original-format reference. No independent runtime) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 614 Tm (provider has yet been qualified.) Tj ET
-BT /F2 11 Tf 0.02 0.50 0.55 rg 1 0 0 1 50 584 Tm (CONCEPTUAL MEDIA MAP - NOT A SECTOR MAP) Tj ET
-0.05 0.36 0.47 rg 50 507 238 62 re f
-BT /F2 11 Tf 1 1 1 rg 1 0 0 1 62 533 Tm (Super / spare) Tj ET
-0.05 0.36 0.47 rg 301 507 238 62 re f
-BT /F2 11 Tf 1 1 1 rg 1 0 0 1 313 533 Tm (Band bitmaps) Tj ET
-0.05 0.36 0.47 rg 50 431 238 62 re f
-BT /F2 11 Tf 1 1 1 rg 1 0 0 1 62 457 Tm (Fnode / dnode) Tj ET
-0.05 0.36 0.47 rg 301 431 238 62 re f
-BT /F2 11 Tf 1 1 1 rg 1 0 0 1 313 457 Tm (Extent data) Tj ET
-BT /F2 10 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 404 Tm (History / architecture / allocation / integrity / implementation / tests) Tj ET
-
-%%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.04 0.54 0.60 rg 50 747 115 4 re f
-0.78 0.82 0.86 RG 0.6 w 50 50 m 545 50 l S
-BT /F2 9 Tf 0.62 0.86 0.90 rg 1 0 0 1 50 801 Tm (INFILTRATOR / ORIGINAL FILESYSTEM HISTORY AND DESIGN) Tj ET
-BT /F2 19 Tf 1 1 1 rg 1 0 0 1 50 771 Tm (High Performance File System) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 34 Tm (Filesystem-HPFS / engineering reference) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 512 34 Tm (PAGE 02) Tj ET
-BT /F2 14 Tf 0.02 0.45 0.50 rg 1 0 0 1 50 711 Tm (HISTORICAL CHRONOLOGY) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 676 Tm (HPFS was introduced with OS/2 1.2 as an alternative to FAT. It provided) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 660 Tm (longer filenames, band allocation and tree-based directories. HPFS386 and) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 644 Tm (ordinary HPFS are not interchangeable profiles.) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 614 Tm (The historic format and the InfiltratorOS implementation are distinct. An) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 598 Tm (external driver or archival utility is evidence, not a qualified production) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 582 Tm (provider.) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 552 Tm (https://github.com/torvalds/linux/tree/v6.12/fs/hpfs) Tj ET
-
-%%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.04 0.54 0.60 rg 50 747 115 4 re f
-0.78 0.82 0.86 RG 0.6 w 50 50 m 545 50 l S
-BT /F2 9 Tf 0.62 0.86 0.90 rg 1 0 0 1 50 801 Tm (INFILTRATOR / ORIGINAL FILESYSTEM HISTORY AND DESIGN) Tj ET
-BT /F2 19 Tf 1 1 1 rg 1 0 0 1 50 771 Tm (High Performance File System) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 34 Tm (Filesystem-HPFS / engineering reference) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 512 34 Tm (PAGE 03) Tj ET
-BT /F2 14 Tf 0.02 0.45 0.50 rg 1 0 0 1 50 711 Tm (ORIGINAL ON-DISK ARCHITECTURE) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 676 Tm (Boot/superblock and spare block, band allocation bitmaps, fnodes/anodes,) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 660 Tm (dnode directory B-trees, file extent trees, extended attributes and codepage) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 644 Tm (rules. The single native C/C++ engine owns these format semantics; consumers) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 628 Tm (provide bounded Common V2 host services, never competing parsers.) Tj ET
-
-%%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.04 0.54 0.60 rg 50 747 115 4 re f
-0.78 0.82 0.86 RG 0.6 w 50 50 m 545 50 l S
-BT /F2 9 Tf 0.62 0.86 0.90 rg 1 0 0 1 50 801 Tm (INFILTRATOR / ORIGINAL FILESYSTEM HISTORY AND DESIGN) Tj ET
-BT /F2 19 Tf 1 1 1 rg 1 0 0 1 50 771 Tm (High Performance File System) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 34 Tm (Filesystem-HPFS / engineering reference) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 512 34 Tm (PAGE 04) Tj ET
-BT /F2 14 Tf 0.02 0.45 0.50 rg 1 0 0 1 50 711 Tm (ALLOCATION, INTEGRITY AND RECOVERY) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 676 Tm (Validate band geometry, tree ordering, fnode/anode relationships, directory) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 660 Tm (references and free-space accounting. Unknown codepages or dirty/spare-block) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 644 Tm (states must not be silently accepted for mutation. All arithmetic, offsets) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 628 Tm (and lengths are checked before I/O. Writable operations require exclusive) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 612 Tm (access, explicit ordering, flush and interruption/recovery evidence.) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 596 Tm (Read-only operations leave the medium unchanged.) Tj ET
-
-%%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.04 0.54 0.60 rg 50 747 115 4 re f
-0.78 0.82 0.86 RG 0.6 w 50 50 m 545 50 l S
-BT /F2 9 Tf 0.62 0.86 0.90 rg 1 0 0 1 50 801 Tm (INFILTRATOR / ORIGINAL FILESYSTEM HISTORY AND DESIGN) Tj ET
-BT /F2 19 Tf 1 1 1 rg 1 0 0 1 50 771 Tm (High Performance File System) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 34 Tm (Filesystem-HPFS / engineering reference) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 512 34 Tm (PAGE 05) Tj ET
-BT /F2 14 Tf 0.02 0.45 0.50 rg 1 0 0 1 50 711 Tm (DISK READ PATH / SOURCE EVIDENCE) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 676 Tm (Original editable source) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 660 Tm (\(https://github.com/Infiltrator-Projects/Filesystems/blob/101026021d9088d80b7) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 644 Tm (f0f472d9061f0e2c688a3/native/filesystems/hpfs/linux/hpfs.h\) \(blob) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 628 Tm (281dec8f63...\). The original header defines little-endian boot magic 0xaa55,) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 612 Tm (superblock magic 0xf995e849, spare-block magic 0xf9911849, dnode magic) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 596 Tm (0x77e40aae and codepage record identifiers. Validate the super/spare pair and) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 580 Tm (band bitmap before reading fnodes/anodes; traverse dnodes with bounded record) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 564 Tm (lengths, allocation checks and validated name/codepage interpretation.) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 548 Tm (Distinguish HPFS386 checksum fields from ordinary HPFS rules.) Tj ET
-
-%%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.04 0.54 0.60 rg 50 747 115 4 re f
-0.78 0.82 0.86 RG 0.6 w 50 50 m 545 50 l S
-BT /F2 9 Tf 0.62 0.86 0.90 rg 1 0 0 1 50 801 Tm (INFILTRATOR / ORIGINAL FILESYSTEM HISTORY AND DESIGN) Tj ET
-BT /F2 19 Tf 1 1 1 rg 1 0 0 1 50 771 Tm (High Performance File System) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 34 Tm (Filesystem-HPFS / engineering reference) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 512 34 Tm (PAGE 06) Tj ET
-BT /F2 14 Tf 0.02 0.45 0.50 rg 1 0 0 1 50 711 Tm (COMMON V2 IMPLEMENTATION BOUNDARY) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 676 Tm (Only infiltrator_filesystem_api_v2 is public. Target the genuine) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 660 Tm (PROBE/MOUNT/UNMOUNT/STAT/LIST/READ operations first; negotiate actual) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 644 Tm (supported operation masks. VOLUME, METADATA and DEFRAG operations \(including) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 628 Tm (MAP, PLAN, EXECUTE, VERIFY, RECOVER\) are individually qualified or refused.) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 612 Tm (Test Media uses the same provider's qualified format and namespace) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 596 Tm (operations. No FUSE, legacy ABI, private driver or kernel proxy. Hosted and) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 580 Tm (import-free freestanding profiles share the format engine, with generic) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 564 Tm (environment-specific host services.) Tj ET
-
-%%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.04 0.54 0.60 rg 50 747 115 4 re f
-0.78 0.82 0.86 RG 0.6 w 50 50 m 545 50 l S
-BT /F2 9 Tf 0.62 0.86 0.90 rg 1 0 0 1 50 801 Tm (INFILTRATOR / ORIGINAL FILESYSTEM HISTORY AND DESIGN) Tj ET
-BT /F2 19 Tf 1 1 1 rg 1 0 0 1 50 771 Tm (High Performance File System) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 34 Tm (Filesystem-HPFS / engineering reference) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 512 34 Tm (PAGE 07) Tj ET
-BT /F2 14 Tf 0.02 0.45 0.50 rg 1 0 0 1 50 711 Tm (ENGINEERING ACCEPTANCE / HOST I/O) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 676 Tm (- A valid CORE descriptor with a real PROBE is mandatory. Every optional) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 660 Tm (operation has its own capability bit and non-null qualified callback;) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 644 Tm (unavailable operations have neither. Recognised format, unsupported feature,) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 628 Tm (corruption, host I/O failure and stale handles remain distinct outcomes.) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 598 Tm (- Use Common's sector-aligned bounded byte helpers. Validate partition) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 582 Tm (extent, logical/physical sector geometry and maximum transfer before reading.) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 566 Tm (Serialize overlapping read/modify/write sectors; request explicit flush) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 550 Tm (barriers. Never infer exclusivity from flags alone; require real exclusive) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 534 Tm (unmounted ownership before formatting or raw mutation. Require the Common) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 518 Tm (entropy service when the format needs a unique identity.) Tj ET
-
-%%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.04 0.54 0.60 rg 50 747 115 4 re f
-0.78 0.82 0.86 RG 0.6 w 50 50 m 545 50 l S
-BT /F2 9 Tf 0.62 0.86 0.90 rg 1 0 0 1 50 801 Tm (INFILTRATOR / ORIGINAL FILESYSTEM HISTORY AND DESIGN) Tj ET
-BT /F2 19 Tf 1 1 1 rg 1 0 0 1 50 771 Tm (High Performance File System) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 34 Tm (Filesystem-HPFS / engineering reference) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 512 34 Tm (PAGE 08) Tj ET
-BT /F2 14 Tf 0.02 0.45 0.50 rg 1 0 0 1 50 711 Tm (CONSUMERS / RELOCATION / TEST MEDIA) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 676 Tm (- Qualify hosted and import-free freestanding profiles separately; enforce) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 660 Tm (module identity and trust, exact export set and actual packaged bytes. BOOT) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 644 Tm (and kernel are generic loaders; BOOT uses the same file in) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 628 Tm (/EFI/InfiltratorOS/BOOT/drivers_x64/, with the installed canonical copy in) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 612 Tm (/System/Filesystems/. No per-format .ko/.efi, FUSE, proxy, legacy ABI,) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 596 Tm (external formatter or consumer-side parsing substitutes for the engine.) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 566 Tm (- Test Media must format and populate through actual V2 FORMAT/CREATE/WRITE) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 550 Tm (operations; an independent formatter/reader may be a test oracle only, never) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 534 Tm (production fallback. Defragmentation maps, plans, execution, verification and) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 518 Tm (recovery require independent proof of ownership, data preservation and) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 502 Tm (interruption safety. Where not implemented they remain absent.) Tj ET
-
-%%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.04 0.54 0.60 rg 50 747 115 4 re f
-0.78 0.82 0.86 RG 0.6 w 50 50 m 545 50 l S
-BT /F2 9 Tf 0.62 0.86 0.90 rg 1 0 0 1 50 801 Tm (INFILTRATOR / ORIGINAL FILESYSTEM HISTORY AND DESIGN) Tj ET
-BT /F2 19 Tf 1 1 1 rg 1 0 0 1 50 771 Tm (High Performance File System) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 34 Tm (Filesystem-HPFS / engineering reference) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 512 34 Tm (PAGE 09) Tj ET
-BT /F2 14 Tf 0.02 0.45 0.50 rg 1 0 0 1 50 711 Tm (VALIDATION, RECOVERY AND COMPATIBILITY) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 676 Tm (Use independently created HPFS images with nested directory trees, fragmented) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 660 Tm (files, extended attributes and corrupt allocation or dnode records. Compare) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 644 Tm (file bytes against an independent oracle, hash unchanged read-only images,) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 628 Tm (inject short I/O, corruption and interruption; validate exact published) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 612 Tm (module separately in BOOT and kernel. Use disposable media only. No new) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 596 Tm (independent binary or test pass is claimed.) Tj ET
-
-%%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.04 0.54 0.60 rg 50 747 115 4 re f
-0.78 0.82 0.86 RG 0.6 w 50 50 m 545 50 l S
-BT /F2 9 Tf 0.62 0.86 0.90 rg 1 0 0 1 50 801 Tm (INFILTRATOR / ORIGINAL FILESYSTEM HISTORY AND DESIGN) Tj ET
-BT /F2 19 Tf 1 1 1 rg 1 0 0 1 50 771 Tm (High Performance File System) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 34 Tm (Filesystem-HPFS / engineering reference) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 512 34 Tm (PAGE 10) Tj ET
-BT /F2 14 Tf 0.02 0.45 0.50 rg 1 0 0 1 50 711 Tm (BUILD, INSTALLATION AND RELEASE) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 676 Tm (The target installation is /System/Filesystems/HPFS.so and) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 660 Tm (/System/Resources/Documentation/Filesystem-HPFS.pdf. Neither file is) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 644 Tm (currently distributed by this repository. Once the implementation qualifies,) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 628 Tm (the intended release is a portable amd64 DEB and CPU-native source-first RUN,) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 612 Tm (with GitHub's automatic source archive. No install or build command is) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 596 Tm (advertised before an executable build exists.) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 566 Tm (- New build and implementation code is native C/C++ and shell as appropriate,) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 550 Tm (no Python. The generic amd64 DEB and CPU-native source-downloading RUN are) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 534 Tm (the only manually published release assets; GitHub generates source archives.) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 518 Tm (RUN fetches exact versioned source and pinned Common dependency, verifies) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 502 Tm (integrity, compiles natively and installs the selected package; no source) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 486 Tm (archive or DEB embedded. Release immutable exact-main qualification only. No) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 470 Tm (release exists yet.) Tj ET
-
-%%Page
-0.05 0.13 0.22 rg 0 749 595 93 re f
-0.04 0.54 0.60 rg 50 747 115 4 re f
-0.78 0.82 0.86 RG 0.6 w 50 50 m 545 50 l S
-BT /F2 9 Tf 0.62 0.86 0.90 rg 1 0 0 1 50 801 Tm (INFILTRATOR / ORIGINAL FILESYSTEM HISTORY AND DESIGN) Tj ET
-BT /F2 19 Tf 1 1 1 rg 1 0 0 1 50 771 Tm (High Performance File System) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 34 Tm (Filesystem-HPFS / engineering reference) Tj ET
-BT /F1 8 Tf 0.07 0.16 0.23 rg 1 0 0 1 512 34 Tm (PAGE 11) Tj ET
-BT /F2 14 Tf 0.02 0.45 0.50 rg 1 0 0 1 50 711 Tm (PRIMARY SOURCES AND IMPLEMENTATION STATUS) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 676 Tm (https://github.com/torvalds/linux/tree/v6.12/fs/hpfs) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 646 Tm () Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 630 Tm (https://github.com/Infiltrator-Projects/Filesystems/tree/101026021d9088d80b7f) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 614 Tm (0f472d9061f0e2c688a3/native/filesystems/hpfs) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 584 Tm () Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 568 Tm (https://github.com/Infiltrator-Projects/Libraries/blob/main/docs/FILESYSTEM_C) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 552 Tm (OMMON_ABI_V2.md) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 522 Tm (Independently formatted HPFS images, codepage/collation cases, malformed) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 506 Tm (trees and invalid hotfix mappings. Compare independent payloads and) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 490 Tm (unchanged-image hashes; inject truncation, corruption and I/O faults.) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 474 Tm (Establish exact-revision ABI, hosted and import-free freestanding) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 458 Tm (qualification, then independently test BOOT and kernel integration. No local) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 442 Tm (build, runtime or packaging qualification is claimed.) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 412 Tm (Source extraction, implementation and release qualification remain) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 396 Tm (outstanding. This is a source-backed engineering reference, not a complete) Tj ET
-BT /F1 10.2 Tf 0.07 0.16 0.23 rg 1 0 0 1 50 380 Tm (original specification.) Tj ET
-
-%%Page
-0.05 0.13 0.22 rg 0 750 595 92 re f
-0.03 0.53 0.58 rg 50 747 120 4 re f
-0.75 0.82 0.86 RG .7 w 50 49 m 545 49 l S
-BT /F2 9 Tf 0.62 0.88 0.91 rg 1 0 0 1 50 803 Tm (INFILTRATOR / FILESYSTEM DESIGN & QUALIFICATION) Tj ET
-BT /F2 17 Tf 1 1 1 rg 1 0 0 1 50 773 Tm (HPFS - format and architecture) Tj ET
-BT /F1 8 Tf 0.34 0.4 0.44 rg 1 0 0 1 50 34 Tm (Filesystem-HPFS | Design-stage reference | 2119d0718841) Tj ET
-BT /F1 8 Tf 0.34 0.4 0.44 rg 1 0 0 1 505 34 Tm (PAGE 01) Tj ET
-BT /F2 12 Tf 0.02 0.48 0.52 rg 1 0 0 1 50 706 Tm (STATUS / DESIGN CONTRACT) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 681 Tm (This repository is at the design stage. No independent runtime provider, installation) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 665 Tm (package or qualified filesystem operations are claimed. This document is not an) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 649 Tm (installation or user manual.) Tj ET
-BT /F2 12 Tf 0.02 0.48 0.52 rg 1 0 0 1 50 614 Tm (Format scope) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 589 Tm (OS/2 High Performance File System. This is a design contract, not a claim of) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 573 Tm (implemented capabilities.) Tj ET
-BT /F2 12 Tf 0.02 0.48 0.52 rg 1 0 0 1 50 538 Tm (On-disk structures and ownership) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 513 Tm (Boot/superblock and spare block, band allocation bitmaps, fnodes/anodes, dnode) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 497 Tm (directory B-trees, file extent trees, extended attributes and codepage rules. The) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 481 Tm (single native C/C++ engine owns these format semantics; consumers provide bounded) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 465 Tm (Common V2 host services, never competing parsers.) Tj ET
-BT /F2 11 Tf 0.02 0.48 0.52 rg 1 0 0 1 50 430 Tm (Conceptual provider boundary \(planned\)) Tj ET
-0.91 0.95 0.96 rg 50 385 110 30 re f
-BT /F2 9 Tf 0.08 0.16 0.23 rg 1 0 0 1 57 396 Tm (Native media) Tj ET
-0.03 0.53 0.58 RG 1 w 162 400 m 176 400 l S
-0.91 0.95 0.96 rg 178 385 110 30 re f
-BT /F2 9 Tf 0.08 0.16 0.23 rg 1 0 0 1 185 396 Tm (Bounded host I/O) Tj ET
-0.03 0.53 0.58 RG 1 w 290 400 m 304 400 l S
-0.91 0.95 0.96 rg 306 385 110 30 re f
-BT /F2 9 Tf 0.08 0.16 0.23 rg 1 0 0 1 313 396 Tm (Native engine) Tj ET
-0.03 0.53 0.58 RG 1 w 418 400 m 432 400 l S
-0.91 0.95 0.96 rg 434 385 110 30 re f
-BT /F2 9 Tf 0.08 0.16 0.23 rg 1 0 0 1 441 396 Tm (Common V2) Tj ET
-
-%%Page
-0.05 0.13 0.22 rg 0 750 595 92 re f
-0.03 0.53 0.58 rg 50 747 120 4 re f
-0.75 0.82 0.86 RG .7 w 50 49 m 545 49 l S
-BT /F2 9 Tf 0.62 0.88 0.91 rg 1 0 0 1 50 803 Tm (INFILTRATOR / FILESYSTEM DESIGN & QUALIFICATION) Tj ET
-BT /F2 17 Tf 1 1 1 rg 1 0 0 1 50 773 Tm (HPFS - integrity and failure) Tj ET
-BT /F1 8 Tf 0.34 0.4 0.44 rg 1 0 0 1 50 34 Tm (Filesystem-HPFS | Design-stage reference | 2119d0718841) Tj ET
-BT /F1 8 Tf 0.34 0.4 0.44 rg 1 0 0 1 505 34 Tm (PAGE 02) Tj ET
-BT /F2 12 Tf 0.02 0.48 0.52 rg 1 0 0 1 50 706 Tm (Integrity and mutation invariants) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 681 Tm (Validate band geometry, tree ordering, fnode/anode relationships, directory) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 665 Tm (references and free-space accounting. Unknown codepages or dirty/spare-block) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 649 Tm (states must not be silently accepted for mutation. All arithmetic, offsets and lengths) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 633 Tm (are checked before I/O. Writable operations require exclusive access, explicit) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 617 Tm (ordering, flush and interruption/recovery evidence. Read-only operations leave the) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 601 Tm (medium unchanged.) Tj ET
-BT /F2 12 Tf 0.02 0.48 0.52 rg 1 0 0 1 50 566 Tm (Failure and ownership policy) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 541 Tm (Validate before following on-disk references. Unsupported feature combinations,) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 525 Tm (malformed media, unavailable operations and host failures are distinct outcomes.) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 509 Tm (Mutation requires the ownership and ordering conditions in the design; read-only) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 493 Tm (operations must leave the source image unchanged.) Tj ET
-
-%%Page
-0.05 0.13 0.22 rg 0 750 595 92 re f
-0.03 0.53 0.58 rg 50 747 120 4 re f
-0.75 0.82 0.86 RG .7 w 50 49 m 545 49 l S
-BT /F2 9 Tf 0.62 0.88 0.91 rg 1 0 0 1 50 803 Tm (INFILTRATOR / FILESYSTEM DESIGN & QUALIFICATION) Tj ET
-BT /F2 17 Tf 1 1 1 rg 1 0 0 1 50 773 Tm (HPFS - interface and qualification) Tj ET
-BT /F1 8 Tf 0.34 0.4 0.44 rg 1 0 0 1 50 34 Tm (Filesystem-HPFS | Design-stage reference | 2119d0718841) Tj ET
-BT /F1 8 Tf 0.34 0.4 0.44 rg 1 0 0 1 505 34 Tm (PAGE 03) Tj ET
-BT /F2 12 Tf 0.02 0.48 0.52 rg 1 0 0 1 50 706 Tm (Common V2 boundary) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 681 Tm (Only infiltrator_filesystem_api_v2 is public. Target the genuine) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 665 Tm (PROBE/MOUNT/UNMOUNT/STAT/LIST/READ operations first; negotiate actual) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 649 Tm (supported operation masks. VOLUME, METADATA and DEFRAG operations \(including) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 633 Tm (MAP, PLAN, EXECUTE, VERIFY, RECOVER\) are individually qualified or refused.) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 617 Tm (Test Media uses the same provider's qualified format and namespace operations. No) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 601 Tm (FUSE, legacy ABI, private driver or kernel proxy. Hosted and import-free) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 585 Tm (freestanding profiles share the format engine, with generic environment-specific host) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 569 Tm (services.) Tj ET
-BT /F2 12 Tf 0.02 0.48 0.52 rg 1 0 0 1 50 534 Tm (Independent qualification) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 509 Tm (Use independently created HPFS images with nested directory trees, fragmented) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 493 Tm (files, extended attributes and corrupt allocation or dnode records. Compare file) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 477 Tm (bytes against an independent oracle, hash unchanged read-only images, inject short) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 461 Tm (I/O, corruption and interruption; validate exact published module separately in BOOT) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 445 Tm (and kernel. Use disposable media only. No new independent binary or test pass is) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 429 Tm (claimed.) Tj ET
-
-%%Page
-0.05 0.13 0.22 rg 0 750 595 92 re f
-0.03 0.53 0.58 rg 50 747 120 4 re f
-0.75 0.82 0.86 RG .7 w 50 49 m 545 49 l S
-BT /F2 9 Tf 0.62 0.88 0.91 rg 1 0 0 1 50 803 Tm (INFILTRATOR / FILESYSTEM DESIGN & QUALIFICATION) Tj ET
-BT /F2 17 Tf 1 1 1 rg 1 0 0 1 50 773 Tm (HPFS - engineering acceptance) Tj ET
-BT /F1 8 Tf 0.34 0.4 0.44 rg 1 0 0 1 50 34 Tm (Filesystem-HPFS | Design-stage reference | 2119d0718841) Tj ET
-BT /F1 8 Tf 0.34 0.4 0.44 rg 1 0 0 1 505 34 Tm (PAGE 04) Tj ET
-BT /F2 12 Tf 0.02 0.48 0.52 rg 1 0 0 1 50 706 Tm (Engineering and release acceptance) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 681 Tm (- A valid CORE descriptor with a real PROBE is mandatory. Every optional operation) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 665 Tm (has its own capability bit and non-null qualified callback; unavailable operations have) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 649 Tm (neither. Recognised format, unsupported feature, corruption, host I/O failure and) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 633 Tm (stale handles remain distinct outcomes. - Use Common's sector-aligned bounded byte) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 617 Tm (helpers. Validate partition extent, logical/physical sector geometry and maximum) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 601 Tm (transfer before reading. Serialize overlapping read/modify/write sectors; request) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 585 Tm (explicit flush barriers. Never infer exclusivity from flags alone; require real exclusive) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 569 Tm (unmounted ownership before formatting or raw mutation. Require the Common entropy) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 553 Tm (service when the format needs a unique identity. - Qualify hosted and import-free) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 537 Tm (freestanding profiles separately; enforce module identity and trust, exact export set) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 521 Tm (and actual packaged bytes. BOOT and kernel are generic loaders; BOOT uses the same) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 505 Tm (file in /EFI/InfiltratorOS/BOOT/drivers_x64/, with the installed canonical copy in) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 489 Tm (/System/Filesystems/. No per-format .ko/.efi, FUSE, proxy, legacy ABI, external) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 473 Tm (formatter or consumer-side parsing substitutes for the engine. - Test Media must) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 457 Tm (format and populate through actual V2 FORMAT/CREATE/WRITE operations; an) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 441 Tm (independent formatter/reader may be a test oracle only, never production fallback.) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 425 Tm (Defragmentation maps, plans, execution, verification and recovery require independent) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 409 Tm (proof of ownership, data preservation and interruption safety. Where not implemented) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 393 Tm (they remain absent. - New build and implementation code is native C/C++ and shell as) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 377 Tm (appropriate, no Python. The generic amd64 DEB and CPU-native source-downloading) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 361 Tm (RUN are the only manually published release assets; GitHub generates source) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 345 Tm (archives. RUN fetches exact versioned source and pinned Common dependency, verifies) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 329 Tm (integrity, compiles natively and installs the selected package; no source archive or) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 313 Tm (DEB embedded. Release immutable exact-main qualification only. No release exists yet.) Tj ET
-BT /F2 12 Tf 0.02 0.48 0.52 rg 1 0 0 1 50 278 Tm (Source and authority) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 253 Tm (Prepared from README.md and native/filesystems/hpfs/DESIGN.md at revision) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 237 Tm (2119d07188414074c1c2fbf90db31e9d0650d730. The editable Markdown design and) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 221 Tm (migration status are authoritative. No test result, release or implemented capability) Tj ET
-BT /F1 10.5 Tf 0.08 0.16 0.23 rg 1 0 0 1 50 205 Tm (is inferred from this reference.) Tj ET
+0.06 0.15 0.23 rg 0 768 595 74 re f
+1 1 1 rg BT /F2 10 Tf 43 811 Td (INFILTRATOR / FILESYSTEM ENGINEERING) Tj ET
+BT /F2 22 Tf 43 784 Td (HPFS - technical reference) Tj ET
+0.08 0.14 0.20 rg BT /F2 15 Tf 43 736 Td (13. Source and implementation boundary) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 706 Td (Original context: Ray Duncan, Design Goals and Implementation of the New High) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 692 Td (Performance File System, Microsoft Systems Journal, September 1989. Independent) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 678 Td (on-disk cross-reference: Linux fs/hpfs/hpfs.h, fs/hpfs/anode.c, dnode.c and) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 664 Td (alloc.c, https://github.com/torvalds/linux/tree/v6.12/fs/hpfs . The reference above) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 650 Td (describes the classic format, not the current capabilities of the Infiltrator) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (provider. Exact HPFS386 ACL/checksum and historical codepage differences require) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (further primary-source and fixture validation before declaring full writable) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (compatibility. Preserve the prior implementation-status documents as historical) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 594 Td (appendices.) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 570 Td (The original header supplies boot signature 0xaa55, superblock 0xf995e849, spare) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 556 Td (block 0xf9911849 and dnode 0x77e40aae; compare these with the selected revision.) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 532 Td (Retained source:) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 518 Td (https://github.com/Infiltrator-Projects/Filesystems/blob/101026021d9088d80b7f0f472d) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 504 Td (9061f0e2c688a3/native/filesystems/hpfs/linux/hpfs.h \(blob 281dec8f63\).) Tj ET
+0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 14) Tj ET

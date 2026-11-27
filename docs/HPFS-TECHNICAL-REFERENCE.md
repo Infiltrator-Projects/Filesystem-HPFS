@@ -12,6 +12,8 @@ The boot sector is sector 0 and carries a FAT-like BPB, HPFS identification and 
 
 Sector 17 contains the spare block, magic 0xF9911849 and 0xFA5229C5 at offsets 0 and 4. Status bytes begin at 8; the low bit marks an unclean volume. At 12 is the hotfix table location, followed by counts of used and total spare sectors, then free and total emergency directory nodes, codepage directory and codepage count. HPFS386 adds checksum and feature semantics; do not assume classic unused fields are universally unused. The hotfix table associates original sector addresses with preallocated replacements. Interpret mapped addresses consistently for both read and write; validate mapping ranges and uniqueness. Keep hotfix pools outside normal allocation.
 
+Distinguish ordinary HPFS from HPFS386 checksum fields and validate the super/spare pair, hotfix mappings and codepage records before relying on dnode lookup.
+
 ## Band allocation and free space
 
 A normal band covers 16384 sectors, or 8 MiB. Its 2048-byte bitmap records one sector per bit: 1 means available, 0 means reserved or allocated. Bit numbering starts at the least significant bit of each byte. The table referenced by the superblock supplies the bitmap locations; their common alternating end placements are not authoritative. For sector 18000 the band index is 1, local sector is 1616, bitmap byte 202 and bit 0. The directory band is already reserved in the ordinary bitmap; its separate bitmap uses one bit per four-sector directory node. Free-space counts must exclude both forms of reserved space.
@@ -44,8 +46,14 @@ For allocation, find suitably sized contiguous free runs near the owning directo
 
 Traverse root and every directory child with cycle detection; collect file, dnode, anode, external EA and reserved-sector ownership. Compare that ownership against both bitmap classes; detect overlaps, missing allocations and unreachable nodes. Validate lengths independently from logical extent capacity and preserve unknown feature data. Test a directory crossing one dnode, an extent tree crossing eight runs, a file whose allocation spans two bands, non-ASCII case comparisons and a hotfixed sector. Fault-inject between allocation, copy, publication and release. Do not repair ambiguous ownership by guessing.
 
+## Implementation and qualification boundary
+
+The independent provider uses Common V2: https://github.com/Infiltrator-Projects/Libraries/blob/main/docs/FILESYSTEM_COMMON_ABI_V2.md . Negotiate actual operation masks and media profiles. Distinguish unsupported, corrupt, I/O and stale-handle results. Require bounded host I/O, exclusive unmounted ownership and durable flush before mutation. Test Media and Defragmenter consume the same engine, not separate format parsers. Hosted and freestanding binaries, relocation, recovery, BOOT, kernel integration and packages require separate exact-source evidence. Current support belongs to the repository README and qualification records. The intended package paths are /System/Filesystems/ and /System/Resources/Documentation/; the reference is not an installation or release-status claim.
+
 ## Source and implementation boundary
 
 Original context: Ray Duncan, Design Goals and Implementation of the New High Performance File System, Microsoft Systems Journal, September 1989. Independent on-disk cross-reference: Linux fs/hpfs/hpfs.h, fs/hpfs/anode.c, dnode.c and alloc.c, https://github.com/torvalds/linux/tree/v6.12/fs/hpfs . The reference above describes the classic format, not the current capabilities of the Infiltrator provider. Exact HPFS386 ACL/checksum and historical codepage differences require further primary-source and fixture validation before declaring full writable compatibility. Preserve the prior implementation-status documents as historical appendices.
 
-The PDF preserves both earlier documents as explicitly historical appendices.
+The original header supplies boot signature 0xaa55, superblock 0xf995e849, spare block 0xf9911849 and dnode 0x77e40aae; compare these with the selected revision.
+
+Retained source: https://github.com/Infiltrator-Projects/Filesystems/blob/101026021d9088d80b7f0f472d9061f0e2c688a3/native/filesystems/hpfs/linux/hpfs.h (blob 281dec8f63).
