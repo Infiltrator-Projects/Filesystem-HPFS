@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 #include <infiltratr/filesystem_module_v2.h>
+#include "../Libraries/tests/filesystem_allocation_pages.h"
 #include <assert.h>
 #include <dlfcn.h>
 #include <stdio.h>
@@ -56,6 +57,10 @@ static int rd(void *c,uint64_t off,void *out,uint32_t n)
 {(void)c;if(fail||off>sizeof disk||n>sizeof disk-off||off%sector||n%sector)return -1;memcpy(out,disk+off,n);return 0;}
 static void *alloc(void *c,size_t n){(void)c;void *p=malloc(n);if(p)++allocs;return p;}
 static void drop(void *c,void *p){(void)c;if(p){assert(allocs);--allocs;free(p);}}
+static int fixture_allocated(uint64_t block)
+{
+    return !(blk(20)[block/8] & (1u<<(block%8)));
+}
 int main(int argc,char **argv)
 {
     fixture();
@@ -76,6 +81,8 @@ int main(int argc,char **argv)
         uint32_t got=0;assert(core->probe(&h,&got)==0&&got==1&&!allocs);
         void *v=NULL,*other=NULL;IfsFsVolumeInfoV2 i={.structure_bytes=sizeof i};
         assert(core->mount(&h,&v,&i)==0&&v&&i.total_bytes==sizeof disk&&i.free_bytes==(N-74)*B);
+        const IfsFsAllocationOpsV2 *allocation=(const void *)ifs_fs_group_v2(api,IFS_FS_GROUP_ALLOCATION);
+        check_allocation_pages(allocation,v,B,h.volume_bytes,i.free_bytes,fixture_allocated);
         assert(core->mount(&h,&other,&i)==0&&other!=v);
         char name[256];IfsFsEntryV2 e={.structure_bytes=sizeof e,.name=name,.name_capacity=sizeof name};
         assert(core->directory_entry(v,"/",0,&e)==0&&!strcmp(name,"boot.efi"));

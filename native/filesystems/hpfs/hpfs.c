@@ -6,6 +6,7 @@
  * semantics, no active hotfix remapping or HPFS386-specific features.
  */
 #include <infiltratr/filesystem_module_v2.h>
+#include <infiltratr/filesystem_block_map_v2.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <stdatomic.h>
@@ -333,15 +334,42 @@ WRAP(stat_path,(void *p,const char *s,IfsFsEntryV2 *o),stat_impl(p,s,o))
 WRAP(list_path,(void *p,const char *s,uint32_t i,IfsFsEntryV2 *o),list_impl(p,s,i,o))
 WRAP(read_path,(void *p,const char *s,uint64_t a,void *b,uint32_t n),read_impl(p,s,a,b,n))
 WRAP(query,(void *p,IfsFsVolumeInfoV2 *o),query_impl(p,o))
+/* Mount has validated the native bitmap and reconciled its free count.
+ * Use the same bit order and occupancy predicate as the namespace reader,
+ * under the same mount lease, to export partition-relative byte ranges. */
+static uint32_t allocation_state(const void *context, uint64_t block)
+{
+    const Volume *v = context;
+    return allocated(v, (uint32_t)block, 1) ? IFS_FS_SPACE_ALLOCATED : IFS_FS_SPACE_FREE;
+}
+
+static int allocation_map(void *handle, uint64_t cursor, IfsFsAllocationRangeV2 *out,
+                          uint32_t capacity, uint32_t *written)
+{
+    if (!written) return IFS_FS_INVALID;
+    *written = 0;
+    if (!enter()) return IFS_FS_BUSY;
+    Volume *v = mounted(handle);
+    if (!v) return leave(IFS_FS_INVALID);
+    return leave(ifs_fs_block_map_page_v2(&v->host, 0, v->sectors, 512u, v,
+                                           allocation_state, cursor, out, capacity, written));
+}
+
+static const IfsFsAllocationOpsV2 allocation_ops = {
+    .header={2,sizeof(allocation_ops),IFS_FS_GROUP_ALLOCATION,0,IFS_FS_ALLOCATION_MAP},
+    .map=allocation_map
+};
 static const IfsFsCoreOpsV2 core={.header={2,sizeof(core),IFS_FS_GROUP_CORE,0,IFS_FS_CORE_PROBE|IFS_FS_CORE_MOUNT|IFS_FS_CORE_STAT|IFS_FS_CORE_LIST|IFS_FS_CORE_READ},.probe=probe,.mount=mount,.unmount=unmount,.stat=stat_path,.directory_entry=list_path,.read=read_path};
 static const IfsFsVolumeOpsV2 volume={.header={2,sizeof(volume),IFS_FS_GROUP_VOLUME,0,IFS_FS_VOLUME_QUERY},.query=query};
 static const IfsFsGroupHeaderV2 *group(uint32_t id,uint32_t lo,uint32_t hi)
-{if(lo>2||hi<2)return NULL;if(id==IFS_FS_GROUP_CORE)return &core.header;if(id==IFS_FS_GROUP_VOLUME)return &volume.header;return NULL;}
+{if(lo>2||hi<2)return NULL;if(id==IFS_FS_GROUP_CORE)return &core.header;if(id==IFS_FS_GROUP_ALLOCATION)return &allocation_ops.header;
+ if(id==IFS_FS_GROUP_VOLUME)return &volume.header;
+ return NULL;}
 static const IfsFsModuleApiV2 api={.abi_version=2,.structure_bytes=sizeof(api),.format_id="hpfs",
 #ifdef IFS_BOOT_FIRMWARE
 .runtime_profiles=IFS_FS_PROFILE_FREESTANDING|IFS_FS_PROFILE_FIRMWARE,
 #else
 .runtime_profiles=IFS_FS_PROFILE_HOSTED,
 #endif
-.group_mask=IFS_FS_GROUP_BIT(IFS_FS_GROUP_CORE)|IFS_FS_GROUP_BIT(IFS_FS_GROUP_VOLUME),.query_group=group};
+.group_mask=IFS_FS_GROUP_BIT(IFS_FS_GROUP_ALLOCATION)|IFS_FS_GROUP_BIT(IFS_FS_GROUP_CORE)|IFS_FS_GROUP_BIT(IFS_FS_GROUP_VOLUME),.query_group=group};
 __attribute__((visibility("default")))const IfsFsModuleApiV2 *infiltrator_filesystem_api_v2(void){return &api;}

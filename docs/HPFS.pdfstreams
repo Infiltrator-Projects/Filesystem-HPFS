@@ -78,6 +78,11 @@ BT /F2 22 Tf 43 784 Td (HPFS - technical reference) Tj ET
 0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (bitmap byte 202 and bit 0. The directory band is already reserved in the ordinary) Tj ET
 0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (bitmap; its separate bitmap uses one bit per four-sector directory node. Free-space) Tj ET
 0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (counts must exclude both forms of reserved space.) Tj ET
+0.08 0.14 0.20 rg BT /F2 13 Tf 43 576 Td (Common V2 physical maps) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 553 Td (ALLOCATION.MAP uses the checked allocation band bitmaps. A set bit denotes a) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 539 Td (free sector. The provider marks the part of the partition beyond the sector) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 525 Td (count as reserved. The qualification fixture checks the state of every 512-byte) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 511 Td (sector, the sum of free bytes and a cursor beginning inside a sector.) Tj ET
 0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 5) Tj ET
 
 %%Page

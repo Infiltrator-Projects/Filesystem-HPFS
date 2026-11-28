@@ -1,4 +1,5 @@
 %PDF-1.4
+%‚„œ”
 1 0 obj
 << /Type /Catalog /Pages 2 0 R >>
 endobj
@@ -110,7 +111,7 @@ endobj
 << /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R /F3 5 0 R >> >> /Contents 15 0 R >>
 endobj
 15 0 obj
-<< /Length 1361 >>
+<< /Length 1933 >>
 stream
 0.06 0.15 0.23 rg 0 768 595 74 re f
 1 1 1 rg BT /F2 10 Tf 43 811 Td (INFILTRATOR / FILESYSTEM ENGINEERING) Tj ET
@@ -124,6 +125,11 @@ BT /F2 22 Tf 43 784 Td (HPFS - technical reference) Tj ET
 0.08 0.14 0.20 rg BT /F3 10 Tf 43 636 Td (bitmap byte 202 and bit 0. The directory band is already reserved in the ordinary) Tj ET
 0.08 0.14 0.20 rg BT /F3 10 Tf 43 622 Td (bitmap; its separate bitmap uses one bit per four-sector directory node. Free-space) Tj ET
 0.08 0.14 0.20 rg BT /F3 10 Tf 43 608 Td (counts must exclude both forms of reserved space.) Tj ET
+0.08 0.14 0.20 rg BT /F2 13 Tf 43 576 Td (Common V2 physical maps) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 553 Td (ALLOCATION.MAP uses the checked allocation band bitmaps. A set bit denotes a) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 539 Td (free sector. The provider marks the part of the partition beyond the sector) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 525 Td (count as reserved. The qualification fixture checks the state of every 512-byte) Tj ET
+0.08 0.14 0.20 rg BT /F3 10 Tf 43 511 Td (sector, the sum of free bytes and a cursor beginning inside a sector.) Tj ET
 0.2 0.3 0.4 rg BT /F1 9 Tf 43 32 Td (Historical development and engineering reference | 5) Tj ET
 endstream
 endobj
@@ -332,41 +338,41 @@ endobj
 xref
 0 34
 0000000000 65535 f 
-0000000009 00000 n 
-0000000058 00000 n 
-0000000206 00000 n 
-0000000276 00000 n 
-0000000351 00000 n 
-0000000419 00000 n 
-0000000565 00000 n 
-0000002000 00000 n 
-0000002146 00000 n 
-0000003522 00000 n 
-0000003670 00000 n 
-0000005047 00000 n 
-0000005195 00000 n 
-0000006960 00000 n 
-0000007108 00000 n 
-0000008521 00000 n 
-0000008669 00000 n 
-0000010079 00000 n 
-0000010227 00000 n 
-0000011741 00000 n 
-0000011889 00000 n 
-0000013265 00000 n 
-0000013413 00000 n 
-0000014919 00000 n 
-0000015067 00000 n 
-0000016431 00000 n 
-0000016579 00000 n 
-0000018090 00000 n 
-0000018238 00000 n 
-0000019648 00000 n 
-0000019796 00000 n 
-0000021540 00000 n 
-0000021688 00000 n 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000212 00000 n 
+0000000282 00000 n 
+0000000357 00000 n 
+0000000425 00000 n 
+0000000571 00000 n 
+0000002006 00000 n 
+0000002152 00000 n 
+0000003528 00000 n 
+0000003676 00000 n 
+0000005053 00000 n 
+0000005201 00000 n 
+0000006966 00000 n 
+0000007114 00000 n 
+0000009099 00000 n 
+0000009247 00000 n 
+0000010657 00000 n 
+0000010805 00000 n 
+0000012319 00000 n 
+0000012467 00000 n 
+0000013843 00000 n 
+0000013991 00000 n 
+0000015497 00000 n 
+0000015645 00000 n 
+0000017009 00000 n 
+0000017157 00000 n 
+0000018668 00000 n 
+0000018816 00000 n 
+0000020226 00000 n 
+0000020374 00000 n 
+0000022118 00000 n 
+0000022266 00000 n 
 trailer
 << /Size 34 /Root 1 0 R >>
 startxref
-23841
+24419
 %%EOF

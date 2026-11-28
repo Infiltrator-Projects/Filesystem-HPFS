@@ -7,11 +7,11 @@ BASE = -std=c11 -Wall -Wextra -Werror -I$(COMMON_INCLUDE)
 SRC = native/filesystems/hpfs/hpfs.c
 .PHONY: all firmware carrier check clean
 all: build/HPFS.so
-build/HPFS.so: $(SRC) Makefile
+build/HPFS.so: $(SRC) $(COMMON_INCLUDE)/infiltratr/filesystem_block_map_v2.h Makefile
 	mkdir -p build
 	$(CC) $(BASE) $(CFLAGS) -fPIC -fvisibility=hidden -shared -Wl,-z,defs -o $@ $<
 firmware: build/firmware/HPFS.so
-build/firmware/HPFS.so: $(SRC) module/firmware/CMakeLists.txt Makefile
+build/firmware/HPFS.so: $(SRC) $(COMMON_INCLUDE)/infiltratr/filesystem_block_map_v2.h module/firmware/CMakeLists.txt Makefile
 	cmake -S module/firmware -B build/firmware -DCMAKE_C_FLAGS= -DCOMMON_INCLUDE_DIR="$(abspath $(COMMON_INCLUDE))"
 	cmake --build build/firmware
 	test "$$(nm -D --defined-only $@ | awk '{print $$3}')" = infiltrator_filesystem_api_v2
@@ -22,7 +22,7 @@ carrier: all firmware
 	$(OBJCOPY) --dump-section .infiltrator_boot=build/carrier/verify.elf build/carrier/HPFS.so build/carrier/verify-carrier.elf
 	cmp build/firmware/HPFS.so build/carrier/verify.elf
 	rm build/carrier/verify.elf build/carrier/verify-carrier.elf
-build/test_hpfs: tests/test_hpfs.c Makefile
+build/test_hpfs: tests/test_hpfs.c Libraries/tests/filesystem_allocation_pages.h Makefile
 	mkdir -p build
 	$(CC) $(BASE) $(CFLAGS) -o $@ $< -ldl
 check: carrier build/test_hpfs

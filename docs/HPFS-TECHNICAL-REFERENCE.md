@@ -57,3 +57,7 @@ Original context: Ray Duncan, Design Goals and Implementation of the New High Pe
 The original header supplies boot signature 0xaa55, superblock 0xf995e849, spare block 0xf9911849 and dnode 0x77e40aae; compare these with the selected revision.
 
 Retained source: https://github.com/Infiltrator-Projects/Filesystems/blob/101026021d9088d80b7f0f472d9061f0e2c688a3/native/filesystems/hpfs/linux/hpfs.h (blob 281dec8f63).
+
+### Common V2 physical allocation queries
+
+The provider uses the native band bitmaps, where a set bit identifies a free sector. ALLOCATION.MAP returns consecutive partition-relative byte ranges from the requested byte. The geometry beyond the filesystem is reserved. The last range ends at the end of the host partition. A complete scan of the test image reconciles with the mounted free-byte count.
